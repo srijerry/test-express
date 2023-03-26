@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "td" {
   container_definitions = jsonencode([
     {
       name         = "app"
-      image        = "***.dkr.ecr.us-east-2.amazonaws.com/app_repo"
+      image        = "982210731409.dkr.ecr.us-east-1.amazonaws.com/my_app"
       cpu          = 256
       memory       = 512
       essential    = true
@@ -42,15 +42,8 @@ resource "aws_ecs_task_definition" "td" {
   cpu                = "256"
   memory             = "512"
   network_mode       = "awsvpc"
-  task_role_arn      = "arn:aws:iam::***:role/ecsTaskExecutionRole"
-  execution_role_arn = "arn:aws:iam::***:role/ecsTaskExecutionRole"
+  task_role_arn      = "arn:aws:iam::982210731409:role/tf-role"
+  execution_role_arn = "arn:aws:iam::982210731409:role/tf-role"
 }
 
-output task_definition_json {
-  value = aws_ecs_task_definition.app.json
-}
 
-resource "local_file" "tf_key" {
-  content  = aws_ecs_task_definition.app.json
-  filename = ".github/workflow/td.json"
-}
