@@ -30,16 +30,25 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Terraform Init
-        run: terraform init
+        run: |
+          cd terraform
+          terraform init
+
 
       - name: Terraform Fmt
-        run: terraform fmt
+        run: |
+          cd terraform
+          terraform fmt
 
       - name: Terraform Plan
-        run: terraform plan
+        run: |
+          cd terraform
+          terraform plan
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: |
+          cd terraform
+          terraform apply -auto-approve
 
   deploy:
     needs: [test]
