@@ -19,7 +19,7 @@ variable "aws_vpc_cidr" {
 variable "aws_vpc_azs" {
   type        = list(string)
   description = "Availability zone ecs"
-  default     = ["ap-east-1a", "ap-east-1b"]
+  default     = ["us-east-1a", "us-east-1b"]
 }
 
 variable "aws_vpc_private_subnets" {
@@ -61,7 +61,7 @@ variable "aws_ecs_cluster_name" {
 variable "aws_ecr_repository" {
   type        = string
   description = "ECR repo name"
-  default     = "demo_ecs_app"
+  default     = "982210731409.dkr.ecr.us-east-1.amazonaws.com/demo_ecs_app"
 }
 
 variable "aws_ecs_task_def_fam" {
