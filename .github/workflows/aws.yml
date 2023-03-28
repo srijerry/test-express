@@ -71,6 +71,9 @@ jobs:
   test:
     needs: [deploy]
     runs-on: ubuntu-latest
+    env:
+      AWS_REGION: us-east-1
+      
     steps:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
