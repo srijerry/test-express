@@ -1,43 +1,50 @@
 name: Deploy to Amazon ECS
 on:
   push:
-    branches:
-      - main
-env:
-  AWS_REGION: us-east-1
-  ECS_CLUSTER: app_cluster
-  CONTAINER_NAME: app
-  ECS_SERVICE: app_service
-  ECS_TD: .github/workflows/app.json
+    branches:         
+    - 'main' 
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
-      - name: Configure AWS credentials
+    env:
+      AWS_REGION: us-east-1
+      IMAGE_REPO: 982210731409.dkr.ecr.us-east-1.amazonaws.com
+      IMAGE_NAME: demo_ecs_app
+      IMAGE_TAG: 1.0.${{ github.run_number }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.AWS_DEV_ACCESS_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_DEV_SECRET_ID }}
+
+      - name: Login to Docker
+        run: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${{ env.IMAGE_REPO }}
+        
+      - name: Build the Docker image
+        run: docker build -f Dockerfile . --tag ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      # - name: Run Trivy vulnerability scanner
+      #   uses: aquasecurity/trivy-action@master
+      #   with:
+      #     image-ref: ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+      #     output: ./trivy-results
+      #     severity: HIGH,CRITICAL
+      #     exit-code: 0
 
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: "982210731409.dkr.ecr.us-east-1.amazonaws.com"
-          ECR_REPOSITORY: "demo_ecs_app"
-          IMAGE_TAG: latest
+      - name: Push to Amazon ECR
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push ${{ env.IMAGE_REPO }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
       # - name: Download task definition
       #   run: |
