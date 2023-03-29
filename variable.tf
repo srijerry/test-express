@@ -61,7 +61,7 @@ variable "aws_ecs_cluster_name" {
 variable "aws_ecr_repository" {
   type        = string
   description = "ECR repo name"
-  default     = "982210731409.dkr.ecr.us-east-1.amazonaws.com/demo_ecs_app"
+  default     = "demo_ecs_app"
 }
 
 variable "aws_ecs_task_def_fam" {
