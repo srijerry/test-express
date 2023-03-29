@@ -2,8 +2,8 @@ FROM node:19.6
 
 WORKDIR /app
 
-COPY /app/package*.json .
+COPY /app/package*.json ./
 RUN npm install
-COPY . .
+COPY . ./
 EXPOSE 80
 CMD node index.js
