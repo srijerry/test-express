@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "demo_ecs_app_def" {
   container_definitions = jsonencode([
     {
       name   = var.aws_ecr_repository
-      image  = "600023384173.dkr.ecr.ap-south-1.amazonaws.com/demo_ecs_app:latest"
+      image  = "982210731409.dkr.ecr.us-east-1.amazonaws.com/demo_ecs_app:latest"
       cpu    = var.fargate_cpu
       memory = var.fargate_memory
       portMappings = [
